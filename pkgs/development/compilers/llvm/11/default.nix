@@ -24,8 +24,11 @@ let
   targetConfig = stdenv.targetPlatform.config;
 
   fetch = name: sha256: fetchurl {
-    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/${name}-${release_version}${candidate}.src.tar.xz";
-    inherit sha256;
+    # url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/${name}-${release_version}${candidate}.src.tar.xz";
+    # inherit sha256;
+    
+    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-11.0.0/llvm-11.0.0.src.tar.xz";
+    sha256 = "0xzmkzccsbbn40jjz7w0pnzw24823vgr18fikdkmcyhijpg1a7ny";
   };
 
   clang-tools-extra_src = fetch "clang-tools-extra" "18n1w1hkv931xzq02b34wglbv6zd6sd0r5kb8piwvag7klj7qw3n";

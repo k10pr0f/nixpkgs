@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
   pname = "libunwind";
   inherit version;
 
-  src = fetch pname "1vpqs2c358v8fbr1r8jmzkfqk12jllimjcfmgxga127ksq9b37nj";
+  src = fetch pname "0bwjd2xf51r2apn8p0f9shb6nc8hnqzq1n9gggjvyjmi6cf02mc4";
 
   patches = [
     ./gnu-install-dirs.patch

@@ -17,7 +17,7 @@
 }:
 
 let
-  release_version = "11.1.0";
+  release_version = "11.0.0";
   candidate = ""; # empty or "rcN"
   dash-candidate = lib.optionalString (candidate != "") "-${candidate}";
   version = "${release_version}${dash-candidate}"; # differentiating these (variables) is important for RCs

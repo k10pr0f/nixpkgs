@@ -28,6 +28,8 @@ stdenv.mkDerivation rec {
   };
 
   postPatch = ''
+    # Flaky on Hydra
+    rm aws-cpp-sdk-core-tests/aws/auth/AWSCredentialsProviderTest.cpp
     # Includes aws-c-auth private headers, so only works with submodule build
     rm aws-cpp-sdk-core-tests/aws/auth/AWSAuthSignerTest.cpp
   '' + lib.optionalString stdenv.hostPlatform.isMusl ''
@@ -42,7 +44,6 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ cmake curl ];
 
   buildInputs = [
-    aws-crt-cpp
     curl openssl zlib
   ] ++ lib.optionals (stdenv.isDarwin &&
                         ((builtins.elem "text-to-speech" apis) ||
@@ -50,14 +51,7 @@ stdenv.mkDerivation rec {
          [ CoreAudio AudioToolbox ];
 
   # propagation is needed for Security.framework to be available when linking
-  propagatedBuildInputs = [
-    aws-c-cal
-    aws-c-event-stream
-    aws-c-io
-    aws-c-common
-    aws-checksums
-    s2n-tls
-  ];
+  propagatedBuildInputs = [ aws-crt-cpp ];
 
   cmakeFlags = [
     "-DBUILD_DEPS=OFF"
@@ -74,7 +68,6 @@ stdenv.mkDerivation rec {
   # fix build with gcc9, can be removed after bumping to current version
   NIX_CFLAGS_COMPILE = [ "-Wno-error" ];
 
-  # aws-cpp-sdk-core-tests/aws/auth/AWSCredentialsProviderTest.cpp
   # aws-cpp-sdk-core-tests/aws/client/AWSClientTest.cpp
   # seem to have a datarace
   enableParallelChecking = false;

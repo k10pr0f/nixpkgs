@@ -49,6 +49,7 @@ self: super: {
   # These packages (and their reverse deps) cannot be built with profiling enabled.
   ghc-heap-view = disableLibraryProfiling super.ghc-heap-view;
   ghc-datasize = disableLibraryProfiling super.ghc-datasize;
+  ghc-vis = disableLibraryProfiling super.ghc-vis;
 
   # This test keeps being aborted because it runs too quietly for too long
   Lazy-Pbkdf2 = if pkgs.stdenv.isi686 then dontCheck super.Lazy-Pbkdf2 else super.Lazy-Pbkdf2;
@@ -280,7 +281,9 @@ self: super: {
   lvmrun = disableHardening (dontCheck super.lvmrun) ["format"];
   matplotlib = dontCheck super.matplotlib;
   # https://github.com/matterhorn-chat/matterhorn/issues/679 they do not want to be on stackage
-  matterhorn = doJailbreak super.matterhorn; # this is needed until the end of time :')
+  matterhorn = doJailbreak (super.matterhorn.overrideScope (self: super: {
+    brick = self.brick_0_64_2;
+  }));
   memcache = dontCheck super.memcache;
   metrics = dontCheck super.metrics;
   milena = dontCheck super.milena;
@@ -630,20 +633,7 @@ self: super: {
   #   removed when the next idris release (1.3.4 probably) comes
   #   around.
   idris = generateOptparseApplicativeCompletion "idris"
-    (doJailbreak (dontCheck
-      (appendPatches super.idris [
-        # compatibility with haskeline >= 0.8
-        (pkgs.fetchpatch {
-          url = "https://github.com/idris-lang/Idris-dev/commit/89a87cf666eb8b27190c779e72d0d76eadc1bc14.patch";
-          sha256 = "0fv493zlpgjsf57w0sncd4vqfkabfczp3xazjjmqw54m9rsfix35";
-        })
-        # compatibility with megaparsec >= 0.9
-        (pkgs.fetchpatch {
-          url = "https://github.com/idris-lang/Idris-dev/commit/6ea9bc913877d765048d7cdb7fc5aec60b196fac.patch";
-          sha256 = "0yms74d1xdxd1c08dnp45nb1ddzq54n6hqgzxx0r494wy614ir8q";
-        })
-      ])
-    ));
+    (doJailbreak (dontCheck super.idris));
 
   # https://github.com/pontarius/pontarius-xmpp/issues/105
   pontarius-xmpp = dontCheck super.pontarius-xmpp;
@@ -691,19 +681,17 @@ self: super: {
   # For 2.17 support: https://github.com/JonasDuregard/sized-functors/pull/10
   size-based = doJailbreak super.size-based;
 
-  # Remove as soon as we update to monoid-extras 0.6 and unpin these packages
-  dual-tree = doJailbreak super.dual-tree;
-  diagrams-core = doJailbreak super.diagrams-core;
+  # https://github.com/diagrams/diagrams-braille/issues/1
+  diagrams-braille = doJailbreak super.diagrams-braille;
 
-  # Apply patch from master to add compat with optparse-applicative >= 0.16.
-  # We unfortunately can't upgrade to 1.4.4 which includes this patch yet
-  # since it would require monoid-extras 0.6 which breaks other diagrams libs.
-  diagrams-lib = doJailbreak (appendPatch super.diagrams-lib
-    (pkgs.fetchpatch {
-      url = "https://github.com/diagrams/diagrams-lib/commit/4b9842c3e3d653be69af19778970337775e2404d.patch";
-      sha256 = "0xqvzh3ip9i0nv8xnh41afxki64r259pxq8ir1a4v99ggnldpjaa";
-      includes = [ "*/CmdLine.hs" ];
-    }));
+  # https://github.com/timbod7/haskell-chart/pull/231#issuecomment-953745932
+  Chart-diagrams = doJailbreak super.Chart-diagrams;
+
+  # https://github.com/xu-hao/namespace/issues/1
+  namespace = doJailbreak super.namespace;
+
+  # https://github.com/cchalmers/plots/issues/46
+  plots = doJailbreak super.plots;
 
   # https://github.com/diagrams/diagrams-solve/issues/4
   diagrams-solve = dontCheck super.diagrams-solve;
@@ -1131,8 +1119,10 @@ self: super: {
   });
 
   # Chart-tests needs and compiles some modules from Chart itself
-  Chart-tests = (addExtraLibrary super.Chart-tests self.QuickCheck).overrideAttrs (old: {
-    preCheck = old.postPatch or "" + ''
+  Chart-tests = overrideCabal (addExtraLibrary super.Chart-tests self.QuickCheck) (old: {
+    # https://github.com/timbod7/haskell-chart/issues/233
+    jailbreak = true;
+    preCheck = old.preCheck or "" + ''
       tar --one-top-level=../chart --strip-components=1 -xf ${self.Chart.src}
     '';
   });
@@ -1272,22 +1262,18 @@ self: super: {
   gi-cairo-render = doJailbreak super.gi-cairo-render;
   gi-cairo-connector = doJailbreak super.gi-cairo-connector;
 
-  svgcairo = overrideCabal super.svgcairo (drv: {
-    patches = [
-      # Remove when https://github.com/gtk2hs/svgcairo/pull/10 gets merged.
-      (pkgs.fetchpatch {
-        url = "https://github.com/gtk2hs/svgcairo/commit/df6c6172b52ecbd32007529d86ba9913ba001306.patch";
-        sha256 = "128qrns56y139vfzg1rbyqfi2xn8gxsmpnxv3zqf4v5spsnprxwh";
-      })
-      # The update here breaks svgcairo:
-      # https://github.com/NixOS/nixpkgs/commit/08fcd73d9dc9a28aa901210b259d9bfb3c228018
-      # and updating the call to the header with the correct name fixes it.
-      (pkgs.fetchpatch {
-        url = "https://github.com/dalpd/svgcairo/commit/4dc6d8d3a6c24be0b8c1fd73b282ff247e7b1e6f.patch";
-        sha256 = "1pq9ld9z67zsxj8vqjf82qwckcp69lvvnrjb7wsyb5jc6jaj3q0a";
-      })
-    ];
-  });
+  svgcairo = appendPatches super.svgcairo [
+    # Remove when https://github.com/gtk2hs/svgcairo/pull/12 goes in.
+    (pkgs.fetchpatch {
+      url = "https://github.com/gtk2hs/svgcairo/commit/348c60b99c284557a522baaf47db69322a0a8b67.patch";
+      sha256 = "0akhq6klmykvqd5wsbdfnnl309f80ds19zgq06sh1mmggi54dnf3";
+    })
+    # Remove when https://github.com/gtk2hs/svgcairo/pull/13 goes in.
+    (pkgs.fetchpatch {
+      url = "https://github.com/dalpd/svgcairo/commit/d1e0d7ae04c1edca83d5b782e464524cdda6ae85.patch";
+      sha256 = "1pq9ld9z67zsxj8vqjf82qwckcp69lvvnrjb7wsyb5jc6jaj3q0a";
+    })
+  ];
 
   # Missing -Iinclude parameter to doc-tests (pull has been accepted, so should be resolved when 0.5.3 released)
   # https://github.com/lehins/massiv/pull/104
@@ -1827,6 +1813,21 @@ self: super: {
     cabal-install-parsers = self.cabal-install-parsers_0_4_2;
   };
 
+  # Build haskell-ci from git repository, including some useful fixes,
+  # e. g. required for generating the workflows for the cabal2nix repository
+  haskell-ci-unstable = (overrideSrc super.haskell-ci {
+    version = "0.13.20211011";
+    src = pkgs.fetchFromGitHub {
+      owner = "haskell-CI";
+      repo = "haskell-ci";
+      rev = "c88e67e675bc4a990da53863c7fb42e67bcf9847";
+      sha256 = "1zhv1cg047lfyxfs3mvc73vv96pn240zaj7f2yl4lw5yj6y5rfk9";
+    };
+  }).overrideScope (self: super: {
+    attoparsec = self.attoparsec_0_14_1;
+    Cabal = self.Cabal_3_6_2_0;
+  });
+
   Frames-streamly = overrideCabal (super.Frames-streamly.override { relude = super.relude_1_0_0_1; }) (drv: {
     # https://github.com/adamConnerSax/Frames-streamly/issues/1
     patchPhase = ''
@@ -2053,5 +2054,18 @@ EOT
   # Fixes https://github.com/NixOS/nixpkgs/issues/140613
   # https://github.com/recursion-schemes/recursion-schemes/issues/128
   recursion-schemes = appendPatch super.recursion-schemes ./patches/recursion-schemes-128.patch;
+
+  # Fix from https://github.com/brendanhay/gogol/pull/144 which has seen no release
+  # Can't use fetchpatch as it required tweaking the line endings as the .cabal
+  # file revision on hackage was gifted CRLF line endings
+  gogol-core = appendPatch super.gogol-core ./patches/gogol-core-144.patch;
+
+  # cabal tries to install files we're supplying from the system
+  # https://github.com/hslua/hslua/pull/103
+  lua = appendPatch super.lua (pkgs.fetchpatch {
+    url = "https://github.com/hslua/hslua/pull/103/commits/814bf1bb284151e827b1c11a7277819ed2779dd2.patch";
+    sha256 = "1kj0g51lkjyf6jv2ikayb3cfh0dcr669swmxl9a2mcrizxcbkrhy";
+    stripLen = 1;
+  });
 
 } // import ./configuration-tensorflow.nix {inherit pkgs haskellLib;} self super

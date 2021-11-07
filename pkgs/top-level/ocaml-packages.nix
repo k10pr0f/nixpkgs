@@ -195,6 +195,8 @@ let
 
     conduit-mirage = callPackage ../development/ocaml-modules/conduit/mirage.nix { };
 
+    coin =  callPackage ../development/ocaml-modules/coin { };
+
     config-file = callPackage ../development/ocaml-modules/config-file { };
 
     containers = callPackage ../development/ocaml-modules/containers { };
@@ -319,6 +321,8 @@ let
       inherit (pkgs) opam git mercurial coreutils gnutar bzip2;
     };
 
+    dune-site = callPackage ../development/ocaml-modules/dune-site { };
+
     duration =  callPackage ../development/ocaml-modules/duration { };
 
     earley = callPackage ../development/ocaml-modules/earley { };
@@ -414,6 +418,10 @@ let
     genspio = callPackage ../development/ocaml-modules/genspio { };
 
     getopt = callPackage ../development/ocaml-modules/getopt { };
+
+    gluten = callPackage ../development/ocaml-modules/gluten { };
+    gluten-lwt = callPackage ../development/ocaml-modules/gluten/lwt.nix { };
+    gluten-lwt-unix = callPackage ../development/ocaml-modules/gluten/lwt-unix.nix { };
 
     gmap = callPackage ../development/ocaml-modules/gmap { };
 
@@ -820,6 +828,8 @@ let
 
     mparser-pcre =  callPackage ../development/ocaml-modules/mparser/pcre.nix { };
 
+    mrmime = callPackage ../development/ocaml-modules/mrmime { };
+
     mtime =  callPackage ../development/ocaml-modules/mtime { };
 
     mustache =  callPackage ../development/ocaml-modules/mustache { };
@@ -928,8 +938,6 @@ let
 
     syslog-message = callPackage ../development/ocaml-modules/syslog-message { };
 
-    ocaml_text = callPackage ../development/ocaml-modules/ocaml-text { };
-
     ocaml-version = callPackage ../development/ocaml-modules/ocaml-version { };
 
     ocf = callPackage ../development/ocaml-modules/ocf { };
@@ -1029,6 +1037,8 @@ let
     pgsolver = callPackage ../development/ocaml-modules/pgsolver { };
 
     phylogenetics = callPackage ../development/ocaml-modules/phylogenetics { };
+
+    piaf = callPackage ../development/ocaml-modules/piaf { };
 
     piqi = callPackage ../development/ocaml-modules/piqi { };
 
@@ -1178,6 +1188,8 @@ let
 
     ppx_yojson_conv_lib = callPackage ../development/ocaml-modules/ppx_yojson_conv_lib {};
 
+    prettym = callPackage ../development/ocaml-modules/prettym { };
+
     printbox = callPackage ../development/ocaml-modules/printbox { };
 
     process = callPackage ../development/ocaml-modules/process { };
@@ -1236,6 +1248,8 @@ let
     ringo-lwt = callPackage ../development/ocaml-modules/ringo/lwt.nix { };
 
     rope = callPackage ../development/ocaml-modules/rope { };
+
+    rosetta = callPackage ../development/ocaml-modules/rosetta { };
 
     routes = callPackage ../development/ocaml-modules/routes { };
 
@@ -1357,6 +1371,8 @@ let
 
     stdint = callPackage ../development/ocaml-modules/stdint { };
 
+    unstrctrd = callPackage ../development/ocaml-modules/unstrctrd { };
+
     uucd = callPackage ../development/ocaml-modules/uucd { };
     uucp = callPackage ../development/ocaml-modules/uucp { };
     uunf = callPackage ../development/ocaml-modules/uunf { };
@@ -1367,6 +1383,8 @@ let
 
     uuseg = callPackage ../development/ocaml-modules/uuseg { };
     uutf = callPackage ../development/ocaml-modules/uutf { };
+
+    uuuu = callPackage ../development/ocaml-modules/uuuu { };
 
     variantslib_p4 = callPackage ../development/ocaml-modules/variantslib { };
 
@@ -1413,6 +1431,8 @@ let
     yaml-sexp = callPackage ../development/ocaml-modules/yaml/yaml-sexp.nix { };
 
     yojson = callPackage ../development/ocaml-modules/yojson { };
+
+    yuscii = callPackage ../development/ocaml-modules/yuscii { };
 
     z3 = callPackage ../development/ocaml-modules/z3 {
       inherit (pkgs) z3;

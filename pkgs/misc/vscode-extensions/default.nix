@@ -316,6 +316,8 @@ let
         };
       };
 
+      chenglou92.rescript-vscode = callPackage ./rescript { };
+
       cmschuetz12.wal = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "wal";
@@ -347,7 +349,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=CoenraadS.bracket-pair-colorizer";
           homepage = "https://github.com/CoenraadS/BracketPair";
           license = licenses.mit;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "bracket-pair-colorizer";
@@ -483,7 +485,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory";
           homepage = "https://github.com/DonJayamanne/gitHistoryVSCode/";
           license = licenses.mit;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "githistory";
@@ -610,7 +612,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode";
           homepage = "https://github.com/prettier/prettier-vscode";
           license = licenses.mit;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "prettier-vscode";
@@ -665,7 +667,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=file-icons.file-icons";
           homepage = "https://github.com/file-icons/vscode";
           license = licenses.mit;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "file-icons";
@@ -750,7 +752,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=freebroccolo.reasonml";
           homepage = "https://github.com/reasonml-editor/vscode-reasonml";
           license = licenses.asl20;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "reasonml";
@@ -852,8 +854,8 @@ let
         mktplcRef = {
           name = "todo-tree";
           publisher = "Gruntfuggly";
-          version = "0.0.213";
-          sha256 = "0fj7vvaqdldhbzm9dqh2plqlhg34jv5khd690xd87h418sv8rk95";
+          version = "0.0.214";
+          sha256 = "0rwxjnrl44rnhx3183037k6435xs4772p58a37azl5cahsyav1hk";
         };
         meta = with lib; {
           license = licenses.mit;
@@ -975,7 +977,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=jnoortheen.nix-ide";
           homepage = "https://github.com/jnoortheen/vscode-nix-ide";
           license = licenses.mit;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "nix-ide";
@@ -1079,6 +1081,18 @@ let
         meta = {
           license = lib.licenses.mit;
           maintainers = with lib.maintainers; [ kamadorueda ];
+        };
+      };
+
+      mhutchie.git-graph = buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "git-graph";
+          publisher = "mhutchie";
+          version = "1.30.0";
+          sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
+        };
+        meta = {
+          license = lib.licenses.mit;
         };
       };
 
@@ -1261,7 +1275,7 @@ let
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=ocamllabs.ocaml-platform";
           homepage = "https://github.com/ocamllabs/vscode-ocaml-platform";
           license = licenses.isc;
-          maintainers = with maintainers; [ superherointj ];
+          maintainers = with maintainers; [ ];
         };
         mktplcRef = {
           name = "ocaml-platform";
